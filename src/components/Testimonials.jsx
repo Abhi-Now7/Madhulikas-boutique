@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 
 const TESTIMONIALS = [
@@ -10,101 +10,88 @@ const TESTIMONIALS = [
 ];
 
 export default function Testimonials() {
-  const [playingVideo, setPlayingVideo] = useState(null);
-
-  const handlePlay = (id, e) => {
-    e.stopPropagation();
-    setPlayingVideo(id);
-    const video = e.currentTarget.closest('.video-card')?.querySelector('video');
-    if (video) {
-      video.muted = false;
-      video.currentTime = 0; // Restart from beginning when they choose to listen
-      video.play();
-    }
-  };
-
   return (
-    <section id="testimonials" className="py-20 md:py-32 bg-primary-dark text-white">
-      <div className="max-w-6xl mx-auto px-6">
+    <section id="testimonials" className="py-20 md:py-32 bg-primary-dark text-white relative overflow-hidden">
+      {/* Background gradient glow */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-2xl h-full bg-gradient-to-b from-heritage-gold/5 to-transparent rounded-b-full blur-3xl" />
+      </div>
+
+      <div className="max-w-6xl mx-auto px-6 relative z-10">
+        {/* Hero Section - Success Stories Theme */}
         <motion.div
-          className="mb-16 text-center"
+          className="text-center mb-16"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
           viewport={{ once: true }}
         >
-          <h2 className="font-serif text-5xl md:text-6xl font-light mb-6">
-            Voices of Our Community
+          <h2 className="font-serif text-5xl md:text-7xl font-light mb-6 leading-tight">
+            Real Stories, <br />
+            <span className="text-heritage-gold">Real Success</span>
           </h2>
-          <p className="text-lg text-white/60 max-w-2xl mx-auto">
-            Real stories from real people who've woven Madhulika's into their wardrobe.
+          <p className="text-lg md:text-xl text-white/60 max-w-2xl mx-auto font-light">
+            Meet the women who've discovered their signature style with Madhulika's
           </p>
         </motion.div>
 
+        {/* Testimonial Videos - Auto-playing muted */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
           {TESTIMONIALS.map((testimonial, idx) => (
             <motion.div
               key={testimonial.id}
-              className="video-card relative aspect-[9/16] rounded-lg overflow-hidden bg-white/10 cursor-pointer group"
+              className="relative aspect-[9/16] rounded-lg overflow-hidden shadow-2xl group"
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.6, delay: idx * 0.1 }}
               viewport={{ once: true }}
-              whileHover={{ scale: 1.03 }}
             >
+              {/* Video - Auto-plays muted on loop */}
               <video
                 src={testimonial.video}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover opacity-70 group-hover:opacity-90 transition-opacity duration-500"
                 autoPlay
                 loop
-                muted={playingVideo !== testimonial.id}
+                muted
                 playsInline
-                controls={playingVideo === testimonial.id}
               />
 
-              {playingVideo !== testimonial.id && (
-                <div
-                  className="absolute inset-0 bg-black/30 flex items-center justify-center group-hover:bg-black/50 transition-colors"
-                  onClick={(e) => handlePlay(testimonial.id, e)}
-                >
-                  <motion.div
-                    className="flex flex-col items-center justify-center gap-2"
-                    whileHover={{ scale: 1.05 }}
-                  >
-                    <div className="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center backdrop-blur-sm shadow-lg">
-                      <svg
-                        className="w-8 h-8 text-primary-dark ml-1"
-                        fill="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path d="M8 5v14l11-7z" />
-                      </svg>
-                    </div>
-                    <span className="text-white font-medium text-sm drop-shadow-md">Tap to Listen</span>
-                  </motion.div>
+              {/* Overlay Gradient */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+
+              {/* Play Indicator - subtle */}
+              <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div className="w-14 h-14 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/30">
+                  <svg className="w-6 h-6 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M8 5v14l11-7z" />
+                  </svg>
                 </div>
-              )}
+              </div>
             </motion.div>
           ))}
         </div>
 
+        {/* Closing Statement */}
         <motion.div
-          className="text-center mt-16"
+          className="text-center mt-20 p-8 md:p-12 bg-white/5 rounded-xl border border-white/10 backdrop-blur-sm"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.3 }}
           viewport={{ once: true }}
         >
-          <p className="text-white/70 mb-6">
-            Join the Madhulika's family — share your story with us.
+          <h3 className="font-serif text-3xl md:text-4xl font-light mb-6 text-white">
+            "Every stitch tells a story. <br /> Every outfit is a celebration."
+          </h3>
+          <p className="text-white/60 max-w-xl mx-auto mb-8 font-light">
+            From traditional occasions to modern celebrations, Madhulika's has been part of countless special moments. We believe fashion should be as unique as you are.
           </p>
           <motion.a
             href="#contact"
-            className="inline-block px-8 py-3 bg-white text-primary-dark font-medium rounded-sm"
+            className="inline-block px-8 py-3 bg-heritage-gold text-white font-medium rounded-sm hover:bg-heritage-clay transition-colors"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            Share Your Experience
+            Share Your Story
           </motion.a>
         </motion.div>
       </div>

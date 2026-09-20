@@ -1,10 +1,19 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Collections() {
   const [expandedFabric, setExpandedFabric] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [showToast, setShowToast] = useState(false);
   const galleryRef = useRef(null);
+
+  // Auto-hide toast after 2.5 seconds
+  useEffect(() => {
+    if (showToast) {
+      const timer = setTimeout(() => setShowToast(false), 2500);
+      return () => clearTimeout(timer);
+    }
+  }, [showToast]);
 
   const imageMap = {
     jamdani: ['0001', '0005', '0007', '0011', '0012', '0016', '0017', '0021', '0023', '0024', '0036', '0039', '0041', '0042'],
@@ -28,12 +37,22 @@ export default function Collections() {
   };
 
   const handleExpand = (fabricId) => {
-    const newValue = expandedFabric === fabricId ? null : fabricId;
-    setExpandedFabric(newValue);
-    if (newValue) {
+    // If clicking the same fabric, just close it
+    if (expandedFabric === fabricId) {
+      setExpandedFabric(null);
+      return;
+    }
+
+    // If no fabric is currently expanded OR switching to a different one, scroll down after expanding
+    if (expandedFabric === null) {
+      // First time opening - small delay then scroll
+      setExpandedFabric(fabricId);
       setTimeout(() => {
         galleryRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 100);
+      }, 150);
+    } else {
+      // Switching between fabrics - no scroll needed, just switch
+      setExpandedFabric(fabricId);
     }
   };
 
@@ -257,9 +276,11 @@ export default function Collections() {
                 className="w-full bg-heritage-gold text-white font-medium py-3 mb-3 rounded-sm hover:opacity-90 transition-opacity"
                 onClick={() => {
                   const existing = JSON.parse(sessionStorage.getItem('orderList') || '[]');
-                  sessionStorage.setItem('orderList', JSON.stringify([...existing, selectedImage]));
+                  const updated = [...existing, selectedImage];
+                  sessionStorage.setItem('orderList', JSON.stringify(updated));
+                  window.dispatchEvent(new CustomEvent('orderListUpdated', { detail: updated }));
                   setSelectedImage(null);
-                  alert('Added to your request list! View it in the Order Form below.');
+                  setShowToast(true);
                 }}
               >
                 Add to Request Form
@@ -271,6 +292,24 @@ export default function Collections() {
                 Message on WhatsApp
               </button>
             </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Toast Notification */}
+      <AnimatePresence>
+        {showToast && (
+          <motion.div
+            className="fixed bottom-24 left-1/2 -translate-x-1/2 z-50 bg-heritage-gold text-white px-6 py-3 rounded-full shadow-lg flex items-center gap-2"
+            initial={{ opacity: 0, y: 20, x: '-50%' }}
+            animate={{ opacity: 1, y: 0, x: '-50%' }}
+            exit={{ opacity: 0, y: 20, x: '-50%' }}
+            transition={{ duration: 0.3 }}
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            </svg>
+            <span className="font-medium">Added to Order!</span>
           </motion.div>
         )}
       </AnimatePresence>

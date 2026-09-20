@@ -8,12 +8,21 @@ export default function ContactCTAs() {
   const [expandedItem, setExpandedItem] = useState(null);
 
   useEffect(() => {
-    const saved = JSON.parse(sessionStorage.getItem('orderList') || '[]');
-    setOrderList(saved);
-    if (saved.length > 0 && messageRef.current) {
-      const orderSummary = saved.map((item, i) => `${i + 1}. ${item.fabric}: ${window.location.origin}${item.src}`).join('\n');
-      messageRef.current.value = `Hi Madhulika's, I'm interested in ordering these items:\n\n${orderSummary}`;
-    }
+    const updateOrderList = () => {
+      const saved = JSON.parse(sessionStorage.getItem('orderList') || '[]');
+      setOrderList(saved);
+    };
+
+    // Initial load
+    updateOrderList();
+
+    // Listen for custom event from Collections component
+    const handleOrderUpdate = (e) => {
+      setOrderList(e.detail || []);
+    };
+
+    window.addEventListener('orderListUpdated', handleOrderUpdate);
+    return () => window.removeEventListener('orderListUpdated', handleOrderUpdate);
   }, []);
 
   const handleRemoveItem = (index) => {

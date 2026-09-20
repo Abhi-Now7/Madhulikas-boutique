@@ -73,16 +73,16 @@ export default function Hero() {
         />
       </div>
 
-      {/* Floating Image Portals (Hidden on very small mobile, visible on sm and up) */}
-      <div className="absolute inset-0 z-0 pointer-events-none hidden sm:block">
+      {/* Floating Image Portals */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
         {floatingImages.map((img, i) => (
           <motion.img
             key={i}
             src={img.src}
-            className={img.className}
+            className={img.className.replace('hidden sm:block', '')}
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{
-              opacity: img.className.includes('md:opacity-90') ? 0.9 : 0.7,
+              opacity: img.className.includes('md:opacity-90') ? 0.8 : 0.6,
               scale: 1,
               ...img.animateParams
             }}
