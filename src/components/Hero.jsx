@@ -73,8 +73,8 @@ export default function Hero() {
         />
       </div>
 
-      {/* Floating Image Portals */}
-      <div className="absolute inset-0 z-0 pointer-events-none">
+      {/* Floating Image Portals - Only show on desktop */}
+      <div className="absolute inset-0 z-0 pointer-events-none hidden md:block">
         {floatingImages.map((img, i) => (
           <motion.img
             key={i}
