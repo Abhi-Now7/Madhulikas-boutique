@@ -1,7 +1,15 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
 
 export default function Hero() {
+  const { scrollY } = useScroll();
+
+  // Transform values for the main header
+  const headerOpacity = useTransform(scrollY, [0, 200], [1, 0]);
+  const headerScale = useTransform(scrollY, [0, 200], [1, 0.5]);
+  const headerY = useTransform(scrollY, [0, 200], [0, -100]);
+  const headerX = useTransform(scrollY, [0, 200], [0, -150]);
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -116,7 +124,12 @@ export default function Hero() {
 
         <motion.h1
           className="font-serif text-6xl sm:text-7xl md:text-8xl font-light tracking-tight mb-6 text-primary-dark"
-          variants={itemVariants}
+          style={{
+            opacity: headerOpacity,
+            scale: headerScale,
+            y: headerY,
+            x: headerX,
+          }}
         >
           Madhulika's
         </motion.h1>
