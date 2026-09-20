@@ -56,7 +56,7 @@ export default function Hero() {
       {/* Animated background gradient blobs */}
       <div className="absolute inset-0 z-0 pointer-events-none">
         <motion.div
-          className="absolute top-20 left-10 w-72 h-72 bg-heritage-gold rounded-full mix-blend-multiply filter blur-3xl opacity-20"
+          className="absolute top-20 left-10 w-72 h-72 bg-heritage-gold rounded-full mix-blend-multiply filter blur-3xl opacity-30 md:opacity-20"
           animate={{
             y: [0, 50, 0],
             x: [0, 30, 0],
@@ -68,7 +68,7 @@ export default function Hero() {
           }}
         />
         <motion.div
-          className="absolute bottom-20 right-10 w-72 h-72 bg-heritage-clay rounded-full mix-blend-multiply filter blur-3xl opacity-15"
+          className="absolute bottom-20 right-10 w-72 h-72 bg-heritage-clay rounded-full mix-blend-multiply filter blur-3xl opacity-25 md:opacity-15"
           animate={{
             y: [0, -50, 0],
             x: [0, -30, 0],
@@ -79,12 +79,6 @@ export default function Hero() {
             ease: 'easeInOut',
           }}
         />
-      </div>
-
-      {/* Mobile Gradient Background */}
-      <div className="absolute inset-0 z-0 pointer-events-none md:hidden">
-        <div className="absolute top-1/4 left-1/4 w-48 h-48 bg-heritage-gold rounded-full mix-blend-multiply filter blur-2xl opacity-20" />
-        <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-heritage-clay rounded-full mix-blend-multiply filter blur-3xl opacity-25" />
       </div>
 
       {/* Floating Image Portals - Only show on desktop */}
@@ -122,17 +116,21 @@ export default function Hero() {
           <span className="text-heritage-gold uppercase tracking-[0.3em] text-sm font-medium">Boutique Fashion</span>
         </motion.div>
 
-        <motion.h1
-          className="font-serif text-6xl sm:text-7xl md:text-8xl font-light tracking-tight mb-6 text-primary-dark"
-          style={{
+        <motion.div
+           style={{
             opacity: headerOpacity,
             scale: headerScale,
             y: headerY,
             x: headerX,
           }}
         >
-          Madhulika's
-        </motion.h1>
+          <motion.h1
+            className="font-serif text-6xl sm:text-7xl md:text-8xl font-light tracking-tight mb-6 text-primary-dark"
+            variants={itemVariants}
+          >
+            Madhulika's
+          </motion.h1>
+        </motion.div>
 
         <motion.p
           className="font-sans text-lg md:text-xl text-primary-dark/80 mb-10 leading-relaxed max-w-2xl mx-auto font-light"

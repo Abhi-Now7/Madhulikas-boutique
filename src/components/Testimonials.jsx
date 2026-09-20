@@ -110,7 +110,7 @@ export default function Testimonials() {
             onClick={() => setActiveVideo(null)}
           >
             <motion.div
-              className="relative w-full max-w-lg aspect-[9/16] rounded-xl overflow-hidden bg-black shadow-2xl"
+              className="relative w-full max-w-lg max-h-[90vh] aspect-[9/16] rounded-xl overflow-hidden bg-black shadow-2xl mx-auto"
               initial={{ scale: 0.9, y: 20, opacity: 0 }}
               animate={{ scale: 1, y: 0, opacity: 1 }}
               exit={{ scale: 0.9, y: 20, opacity: 0 }}
