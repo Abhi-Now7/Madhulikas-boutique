@@ -1,5 +1,5 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const TESTIMONIALS = [
   { id: 1, video: '/Assets/Testimonials/VID-20260918-WA0018.mp4' },
@@ -10,6 +10,8 @@ const TESTIMONIALS = [
 ];
 
 export default function Testimonials() {
+  const [activeVideo, setActiveVideo] = useState(null);
+
   return (
     <section id="testimonials" className="py-20 md:py-32 bg-primary-dark text-white relative overflow-hidden">
       {/* Background gradient glow */}
@@ -40,11 +42,12 @@ export default function Testimonials() {
           {TESTIMONIALS.map((testimonial, idx) => (
             <motion.div
               key={testimonial.id}
-              className="relative aspect-[9/16] rounded-lg overflow-hidden shadow-2xl group"
+              className="relative aspect-[9/16] rounded-lg overflow-hidden shadow-2xl group cursor-pointer"
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.6, delay: idx * 0.1 }}
               viewport={{ once: true }}
+              onClick={() => setActiveVideo(testimonial.video)}
             >
               {/* Video - Auto-plays muted on loop */}
               <video
@@ -61,7 +64,7 @@ export default function Testimonials() {
 
               {/* Play Indicator - subtle */}
               <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <div className="w-14 h-14 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/30">
+                <div className="w-14 h-14 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/30 hover:bg-heritage-gold/80 transition-colors">
                   <svg className="w-6 h-6 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M8 5v14l11-7z" />
                   </svg>
@@ -95,6 +98,42 @@ export default function Testimonials() {
           </motion.a>
         </motion.div>
       </div>
+
+      {/* Video Modal with sound */}
+      <AnimatePresence>
+        {activeVideo && (
+          <motion.div
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setActiveVideo(null)}
+          >
+            <motion.div
+              className="relative w-full max-w-lg aspect-[9/16] rounded-xl overflow-hidden bg-black shadow-2xl"
+              initial={{ scale: 0.9, y: 20, opacity: 0 }}
+              animate={{ scale: 1, y: 0, opacity: 1 }}
+              exit={{ scale: 0.9, y: 20, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                className="absolute top-4 right-4 z-10 w-10 h-10 bg-black/50 hover:bg-heritage-gold text-white rounded-full flex items-center justify-center transition-colors shadow-lg backdrop-blur-md text-xl"
+                onClick={() => setActiveVideo(null)}
+              >
+                ✕
+              </button>
+
+              <video
+                src={activeVideo}
+                className="w-full h-full object-cover"
+                autoPlay
+                controls
+                playsInline
+              />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }
