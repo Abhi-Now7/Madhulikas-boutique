@@ -73,6 +73,17 @@ export default function Hero() {
         />
       </div>
 
+      {/* Mobile Hero Image - Single elegant image on mobile */}
+      <div className="absolute inset-0 z-0 pointer-events-none md:hidden">
+        <motion.img
+          src="/Assets/Products/jamdani/IMG-20260918-WA0001.jpg"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-96 object-cover rounded-2xl shadow-2xl opacity-30"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 0.3, scale: 1 }}
+          transition={{ duration: 1.2, ease: 'easeOut' }}
+        />
+      </div>
+
       {/* Floating Image Portals - Only show on desktop */}
       <div className="absolute inset-0 z-0 pointer-events-none hidden md:block">
         {floatingImages.map((img, i) => (
