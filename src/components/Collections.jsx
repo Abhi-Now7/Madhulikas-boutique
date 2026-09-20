@@ -300,16 +300,16 @@ export default function Collections() {
       <AnimatePresence>
         {showToast && (
           <motion.div
-            className="fixed bottom-24 left-1/2 -translate-x-1/2 z-50 bg-heritage-gold text-white px-6 py-3 rounded-full shadow-lg flex items-center gap-2"
-            initial={{ opacity: 0, y: 20, x: '-50%' }}
-            animate={{ opacity: 1, y: 0, x: '-50%' }}
-            exit={{ opacity: 0, y: 20, x: '-50%' }}
-            transition={{ duration: 0.3 }}
+            className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 bg-heritage-gold text-white px-8 py-4 rounded-lg shadow-2xl flex items-center gap-3"
+            initial={{ opacity: 0, scale: 0.8, x: '-50%', y: '-50%' }}
+            animate={{ opacity: 1, scale: 1, x: '-50%', y: '-50%' }}
+            exit={{ opacity: 0, scale: 0.8, x: '-50%', y: '-50%' }}
+            transition={{ duration: 0.3, type: 'spring' }}
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
             </svg>
-            <span className="font-medium">Added to Order!</span>
+            <span className="font-medium text-lg">Added to Order!</span>
           </motion.div>
         )}
       </AnimatePresence>

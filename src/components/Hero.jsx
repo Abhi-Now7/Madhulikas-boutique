@@ -19,25 +19,25 @@ export default function Hero() {
   const floatingImages = [
     {
       src: '/Assets/Products/modal-silk/IMG-20260918-WA0045.jpg',
-      className: 'absolute top-[15%] left-[5%] xl:left-[15%] w-32 h-48 md:w-40 md:h-56 rounded-full object-cover shadow-2xl opacity-70 md:opacity-90',
+      className: 'absolute top-[15%] left-[5%] xl:left-[15%] w-20 h-32 md:w-40 md:h-56 rounded-full object-cover shadow-2xl opacity-50 md:opacity-90',
       animateParams: { y: [0, -20, 0], rotate: [-2, 2, -2] },
       duration: 7,
     },
     {
       src: '/Assets/Products/jamdani/IMG-20260918-WA0042.jpg',
-      className: 'absolute bottom-[10%] left-[8%] xl:left-[20%] w-36 h-48 md:w-48 md:h-64 rounded-t-full object-cover shadow-2xl opacity-70 md:opacity-90',
+      className: 'absolute bottom-[10%] left-[8%] xl:left-[20%] w-24 h-32 md:w-48 md:h-64 rounded-t-full object-cover shadow-2xl opacity-50 md:opacity-90',
       animateParams: { y: [0, 25, 0], rotate: [1, -3, 1] },
       duration: 9,
     },
     {
       src: '/Assets/Products/katha/IMG-20260918-WA0040.jpg',
-      className: 'absolute top-[20%] right-[5%] xl:right-[15%] w-36 h-36 md:w-48 md:h-48 rounded-bl-[4rem] rounded-tr-[4rem] object-cover shadow-2xl opacity-70 md:opacity-90',
+      className: 'absolute top-[20%] right-[5%] xl:right-[15%] w-24 h-24 md:w-48 md:h-48 rounded-bl-[4rem] rounded-tr-[4rem] object-cover shadow-2xl opacity-50 md:opacity-90',
       animateParams: { y: [0, -15, 0], x: [0, 10, 0] },
       duration: 8,
     },
     {
       src: '/Assets/Products/cotton-linen/IMG-20260918-WA0055.jpg',
-      className: 'absolute bottom-[15%] right-[8%] xl:right-[20%] w-32 h-40 md:w-40 md:h-56 rounded-[2rem] object-cover shadow-2xl opacity-70 md:opacity-90',
+      className: 'absolute bottom-[15%] right-[8%] xl:right-[20%] w-20 h-28 md:w-40 md:h-56 rounded-[2rem] object-cover shadow-2xl opacity-50 md:opacity-90',
       animateParams: { y: [0, -20, 0], rotate: [-3, 1, -3] },
       duration: 10,
     },
