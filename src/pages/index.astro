@@ -1,0 +1,45 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar';
+import Hero from '../components/Hero';
+import Collections from '../components/Collections';
+import Story from '../components/Story';
+import Testimonials from '../components/Testimonials';
+import ContactCTAs from '../components/ContactCTAs';
+---
+
+<Layout title="Madhulika's - Heritage Bengali Aesthetics Meets Modern Design">
+  <Navbar client:load />
+  <main>
+    <Hero client:load />
+    <Collections client:load />
+    <Story client:load />
+    <Testimonials client:load />
+    <ContactCTAs client:load />
+  </main>
+  <footer class="bg-soft-bg text-primary-dark/50 py-8 text-center text-sm">
+    <p>Madhulika's © {new Date().getFullYear()} | Heritage. Modernity. Fluid Storytelling.</p>
+  </footer>
+</Layout>
+
+<style is:global>
+  section {
+    scroll-margin-top: 4rem;
+  }
+
+  .scroll-fade {
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+  }
+</style>
+
+<style is:global>
+  /* Smooth section transition on scroll */
+  section {
+    scroll-margin-top: 4rem;
+  }
+
+  /* Fluid opacity fade on scroll */
+  .scroll-fade {
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+  }
+</style>

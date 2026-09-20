@@ -1,0 +1,115 @@
+---
+import '../global.css';
+---
+
+<nav
+  style={{
+    position: 'fixed',
+    top: '0',
+    width: '100%',
+    zIndex: '50',
+    backgroundColor: 'rgba(249, 248, 246, 0.85)',
+    backdropFilter: 'blur(8px)',
+    borderBottom: '1px solid rgba(194, 157, 89, 0.1)',
+  }}
+>
+  <div
+    style={{
+      maxWidth: '6xl',
+      margin: '0 auto',
+      padding: '1rem 1.5rem',
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+    }}
+  >
+    <a
+      href="/"
+      style={{
+        fontSize: '1.75rem',
+        fontFamily: 'var(--font-serif)',
+        fontWeight: '300',
+        textDecoration: 'none',
+        color: 'var(--color-primary-dark)',
+      }}
+    >
+      Madhulika's
+    </a>
+
+    <div
+      style={{
+        display: 'none',
+        gap: '2rem',
+        color: 'rgba(26, 26, 26, 0.7)',
+      }}
+      class="hidden md:flex"
+    >
+      <a
+        href="#collections"
+        style={{
+          position: 'relative',
+          textDecoration: 'none',
+          color: 'rgba(26, 26, 26, 0.7)',
+        }}
+      >
+        Collections
+        <span
+          style={{
+            position: 'absolute',
+            bottom: '-4px',
+            left: '0',
+            width: '100%',
+            height: '1px',
+            backgroundColor: 'var(--color-heritage-gold)',
+            transform: 'scaleX(0)',
+            transition: 'transform 0.3s',
+          }}
+        />
+      </a>
+      <a
+        href="#story"
+        style={{
+          position: 'relative',
+          textDecoration: 'none',
+          color: 'rgba(26, 26, 26, 0.7)',
+        }}
+      >
+        Story
+        <span
+          style={{
+            position: 'absolute',
+            bottom: '-4px',
+            left: '0',
+            width: '100%',
+            height: '1px',
+            backgroundColor: 'var(--color-heritage-gold)',
+            transform: 'scaleX(0)',
+            transition: 'transform 0.3s',
+          }}
+        />
+      </a>
+      <a
+        href="#contact"
+        style={{
+          position: 'relative',
+          textDecoration: 'none',
+          color: 'rgba(26, 26, 26, 0.7)',
+        }}
+      >
+        Contact
+        <span
+          style={{
+            position: 'absolute',
+            bottom: '-4px',
+            left: '0',
+            width: '100%',
+            height: '1px',
+            backgroundColor: 'var(--color-heritage-gold)',
+            transform: 'scaleX(0)',
+            transition: 'transform 0.3s',
+          }}
+        />
+      </a>
+    </div>
+  </div>
+</nav>

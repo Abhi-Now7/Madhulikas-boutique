@@ -1,0 +1,34 @@
+---
+import '../global.css';
+import '@fontsource/playfair-display/400.css';
+import '@fontsource/playfair-display/600.css';
+import '@fontsource/playfair-display/400-italic.css';
+import '@fontsource/inter/300.css';
+import '@fontsource/inter/400.css';
+import '@fontsource/inter/500.css';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const {
+  title,
+  description = "Madhulika's - Heritage Bengali aesthetics blended with peak modernity. Discover Jamdani, Katha, Modal Silk, and Cotton Linen collections."
+} = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content={description} />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+  </head>
+  <body class="bg-soft-bg text-primary-dark">
+    <slot />
+  </body>
+</html>
