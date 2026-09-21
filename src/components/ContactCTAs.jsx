@@ -1,26 +1,27 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
+const WEB3FORMS_KEY = 'f161cc92-3540-447d-ad10-79d255479d01';
+const WHATSAPP_NUMBER = '919830353411';
+
+const WhatsAppIcon = () => (
+  <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+  </svg>
+);
+
 export default function ContactCTAs() {
-  const whatsappNumber = "919830353411";
-  const messageRef = useRef(null);
   const [orderList, setOrderList] = useState([]);
   const [expandedItem, setExpandedItem] = useState(null);
+  const [formData, setFormData] = useState({ name: '', email: '', phone: '' });
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
 
   useEffect(() => {
-    const updateOrderList = () => {
-      const saved = JSON.parse(sessionStorage.getItem('orderList') || '[]');
-      setOrderList(saved);
-    };
+    const saved = JSON.parse(sessionStorage.getItem('orderList') || '[]');
+    setOrderList(saved);
 
-    // Initial load
-    updateOrderList();
-
-    // Listen for custom event from Collections component
-    const handleOrderUpdate = (e) => {
-      setOrderList(e.detail || []);
-    };
-
+    const handleOrderUpdate = (e) => setOrderList(e.detail || []);
     window.addEventListener('orderListUpdated', handleOrderUpdate);
     return () => window.removeEventListener('orderListUpdated', handleOrderUpdate);
   }, []);
@@ -29,15 +30,48 @@ export default function ContactCTAs() {
     const updated = orderList.filter((_, i) => i !== index);
     setOrderList(updated);
     sessionStorage.setItem('orderList', JSON.stringify(updated));
-    if (updated.length > 0 && messageRef.current) {
-      const orderSummary = updated.map((item, i) => `${i + 1}. ${item.fabric}: ${window.location.origin}${item.src}`).join('\n');
-      messageRef.current.value = `Hi Madhulika's, I'm interested in ordering these items:\n\n${orderSummary}`;
-    } else if (messageRef.current) {
-      messageRef.current.value = "Tell us about your project...";
-    }
+    window.dispatchEvent(new CustomEvent('orderListUpdated', { detail: updated }));
   };
 
-  const whatsappLink = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(messageRef.current?.value || "Hi, I'd love to explore the collections and place an order at Madhulika's!")}`;
+  const buildOrderSummary = () => {
+    if (orderList.length === 0) return 'No specific items selected.';
+    return orderList.map((item, i) => `${i + 1}. ${item.fabric}: ${window.location.origin}${item.src}`).join('\n');
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setSubmitting(true);
+
+    const orderSummary = buildOrderSummary();
+
+    // 1. Submit to Web3Forms (fire and don't block WhatsApp)
+    fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        access_key: WEB3FORMS_KEY,
+        subject: `New Order Request from ${formData.name}`,
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        order_items: orderSummary,
+      }),
+    }).catch(() => {});
+
+    // 2. Open WhatsApp simultaneously
+    const waMessage = encodeURIComponent(
+      `Hi Madhulika's! I'd like to place an order.\n\nName: ${formData.name}\nEmail: ${formData.email}\nPhone: ${formData.phone}\n\nItems I'm interested in:\n${orderSummary}`
+    );
+    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${waMessage}`, '_blank');
+
+    setSubmitting(false);
+    setSubmitted(true);
+    setFormData({ name: '', email: '', phone: '' });
+
+    setTimeout(() => setSubmitted(false), 4000);
+  };
+
+  const quickWhatsappLink = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent("Hi, I'd love to explore the collections and place an order at Madhulika's!")}`;
 
   return (
     <section id="contact" className="py-20 md:py-32 bg-primary-dark text-white relative">
@@ -49,16 +83,14 @@ export default function ContactCTAs() {
           transition={{ duration: 0.8 }}
           viewport={{ once: true }}
         >
-          <h2 className="font-serif text-5xl md:text-6xl font-light mb-6">
-            Begin Your Journey
-          </h2>
+          <h2 className="font-serif text-5xl md:text-6xl font-light mb-6">Begin Your Journey</h2>
           <p className="text-white/60 text-lg max-w-2xl mx-auto">
-            Choose whichever suits your journey — immediate conversation or a structured request.
+            Fill your details below — we'll email you a confirmation and open WhatsApp so you can chat directly.
           </p>
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-          {/* Contact form */}
+          {/* Order Request Form */}
           <motion.div
             className="bg-white/10 backdrop-blur-lg rounded-lg p-8 md:p-12 border border-white/20"
             initial={{ opacity: 0, x: -30 }}
@@ -68,8 +100,8 @@ export default function ContactCTAs() {
             whileHover={{ scale: 1.02 }}
           >
             <h3 className="font-serif text-3xl mb-4">Order Request Form</h3>
-            <p className="text-white/70 mb-6">
-              Share details about your vision — fabric, size, style — and we'll respond within 24 hours.
+            <p className="text-white/70 mb-6 text-sm">
+              One click sends your details to us by email <span className="text-heritage-gold font-medium">and</span> opens WhatsApp to continue the conversation.
             </p>
 
             {/* Selected Items Preview */}
@@ -90,10 +122,7 @@ export default function ContactCTAs() {
                         <p className="text-xs text-white/60">Item {idx + 1}</p>
                       </div>
                       <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleRemoveItem(idx);
-                        }}
+                        onClick={(e) => { e.stopPropagation(); handleRemoveItem(idx); }}
                         className="text-white/60 hover:text-white text-lg transition-colors"
                       >
                         ✕
@@ -104,29 +133,58 @@ export default function ContactCTAs() {
               </div>
             )}
 
-            <form className="space-y-4" onSubmit={(e) => {
-              e.preventDefault();
-              alert('Thank you! Your order request has been sent. We will contact you within 24 hours.');
-            }}>
-              {['Name', 'Email', 'Phone'].map((label) => (
-                <div key={label}>
+            <form className="space-y-4" onSubmit={handleSubmit}>
+              {[
+                { label: 'Name', key: 'name', type: 'text' },
+                { label: 'Email', key: 'email', type: 'email' },
+                { label: 'Phone', key: 'phone', type: 'tel' },
+              ].map(({ label, key, type }) => (
+                <div key={key}>
                   <label className="block text-sm mb-2 text-white/80">{label}</label>
                   <input
-                    type="text"
+                    type={type}
                     required
+                    value={formData[key]}
+                    onChange={(e) => setFormData(prev => ({ ...prev, [key]: e.target.value }))}
                     placeholder={`Your ${label.toLowerCase()}`}
                     className="w-full bg-white/5 border border-white/20 rounded-sm px-4 py-3 text-white placeholder-white/40 focus:outline-none focus:border-heritage-gold transition-colors"
                   />
                 </div>
               ))}
-              <motion.button
-                className="w-full bg-heritage-gold text-white font-medium py-3 rounded-sm mt-4 hover:shadow-lg transition-shadow"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                type="submit"
-              >
-                {orderList.length > 0 ? `Submit Order (${orderList.length} item${orderList.length > 1 ? 's' : ''})` : 'Submit Request'}
-              </motion.button>
+
+              <AnimatePresence mode="wait">
+                {submitted ? (
+                  <motion.div
+                    key="success"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0 }}
+                    className="w-full bg-green-500/20 border border-green-500/40 text-green-300 font-medium py-3 rounded-sm mt-4 text-center text-sm"
+                  >
+                    ✓ Sent! Check WhatsApp to continue your order.
+                  </motion.div>
+                ) : (
+                  <motion.button
+                    key="submit"
+                    className="w-full bg-heritage-gold text-white font-medium py-3 rounded-sm mt-4 hover:shadow-lg transition-shadow flex items-center justify-center gap-2 disabled:opacity-60"
+                    whileHover={{ scale: submitting ? 1 : 1.02 }}
+                    whileTap={{ scale: submitting ? 1 : 0.98 }}
+                    type="submit"
+                    disabled={submitting}
+                  >
+                    {submitting ? (
+                      'Sending...'
+                    ) : (
+                      <>
+                        <WhatsAppIcon />
+                        {orderList.length > 0
+                          ? `Send & Open WhatsApp (${orderList.length} item${orderList.length > 1 ? 's' : ''})`
+                          : 'Send & Open WhatsApp'}
+                      </>
+                    )}
+                  </motion.button>
+                )}
+              </AnimatePresence>
             </form>
           </motion.div>
 
@@ -163,16 +221,14 @@ export default function ContactCTAs() {
 
             <div className="mt-8">
               <motion.a
-                href={whatsappLink}
+                href={quickWhatsappLink}
                 target="_blank"
                 rel="noreferrer"
                 className="flex items-center justify-center gap-3 w-full bg-[#25D366] text-white font-medium py-4 rounded-sm text-center shadow-lg hover:bg-[#20bd5a] transition-colors"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
-                <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24">
-                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
-                </svg>
+                <WhatsAppIcon />
                 Chat on WhatsApp to Order
               </motion.a>
             </div>
@@ -206,9 +262,9 @@ export default function ContactCTAs() {
         )}
       </AnimatePresence>
 
-      {/* Floating Global WhatsApp Button (shows in bottom right) */}
+      {/* Floating Global WhatsApp Button */}
       <motion.a
-        href={whatsappLink}
+        href={quickWhatsappLink}
         target="_blank"
         rel="noreferrer"
         className="fixed bottom-6 right-6 z-50 bg-[#25D366] text-white p-4 rounded-full shadow-2xl hover:shadow-[#25D366]/50 hover:bg-[#20bd5a] transition-all"
